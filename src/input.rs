@@ -1,17 +1,10 @@
 use std::io;
 
-fn parse_input(input: &str) -> Result<(usize, usize), ()> {
+fn parse_input(input: &str) -> Result<(usize, usize), std::num::ParseIntError> {
     let mut parts = input.trim().split(',');
 
-    let i: usize = match parts.next().unwrap_or_default().parse() {
-        Ok(digit) => digit,
-        Err(_) => return Err(()),
-    };
-
-    let j: usize = match parts.next().unwrap_or_default().parse() {
-        Ok(digit) => digit,
-        Err(_) => return Err(()),
-    };
+    let i: usize = parts.next().unwrap().parse()?;
+    let j: usize = parts.next().unwrap().parse()?;
 
     Ok((i, j))
 }
@@ -27,7 +20,7 @@ pub fn input() -> (usize, usize) {
 
         match parse_input(&input) {
             Ok(result) => break result,
-            Err(_) => println!("incorrect input"),
+            Err(e) => println!("incorrect input: {}", e),
         }
     }
 }
