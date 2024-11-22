@@ -128,7 +128,7 @@ impl Game {
     }
 
     pub fn state(&self) -> [[Cell; BOARD_SIZE]; BOARD_SIZE] {
-        self.board.clone()
+        self.board
     }
 }
 
