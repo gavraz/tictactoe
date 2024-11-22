@@ -119,7 +119,7 @@ impl Game {
             }
         }
 
-        if usize::from(self.moves) == BOARD_SIZE*BOARD_SIZE {
+        if usize::from(self.moves) == BOARD_SIZE * BOARD_SIZE {
             return Ended(Tie);
         }
 
