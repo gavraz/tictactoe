@@ -79,7 +79,7 @@ impl Game {
         self.board[i][j] = Cell::Filled(self.current_player);
         self.moves += 1;
 
-        return Ok(self.check());
+        Ok(self.check())
     }
 
     fn check(&mut self) -> GameStatus {
@@ -128,7 +128,7 @@ impl Game {
     }
 
     pub fn state(&self) -> [[Cell; BOARD_SIZE]; BOARD_SIZE] {
-        return self.board.clone();
+        self.board.clone()
     }
 }
 
