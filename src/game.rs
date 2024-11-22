@@ -18,14 +18,14 @@ pub enum Cell {
 impl Cell {
     fn player(&self) -> Option<Player> {
         match self {
-            Cell::Filled(player) => Some(*player),
+            Self::Filled(player) => Some(*player),
             Empty => None,
         }
     }
 }
 
 impl Player {
-    fn opposite(&self) -> Player {
+    fn opposite(&self) -> Self {
         match self {
             X => O,
             O => X,
@@ -59,7 +59,7 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new() -> Game {
+    pub fn new() -> Self {
         Game {
             board: [[Empty; BOARD_SIZE]; BOARD_SIZE],
             current_player: X,

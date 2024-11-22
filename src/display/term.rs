@@ -6,7 +6,7 @@ pub struct TerminalDisplay {}
 
 impl TerminalDisplay {
     pub fn new() -> Self {
-        TerminalDisplay {}
+        Self {}
     }
 }
 
@@ -54,9 +54,9 @@ impl Display for TerminalDisplay {
 impl std::fmt::Display for Cell {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Cell::Filled(Player::X) => write!(f, "X"),
-            Cell::Filled(Player::O) => write!(f, "O"),
-            Cell::Empty => write!(f, " "),
+            Self::Filled(Player::X) => write!(f, "X"),
+            Self::Filled(Player::O) => write!(f, "O"),
+            Self::Empty => write!(f, " "),
         }
     }
 }
@@ -64,8 +64,8 @@ impl std::fmt::Display for Cell {
 impl std::fmt::Display for Player {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Player::X => write!(f, "X"),
-            Player::O => write!(f, "O"),
+            Self::X => write!(f, "X"),
+            Self::O => write!(f, "O"),
         }
     }
 }

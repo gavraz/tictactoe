@@ -9,7 +9,7 @@ pub struct TuiDisplay {
 
 impl TuiDisplay {
     pub fn new() -> Self {
-        TuiDisplay {
+        Self {
             term: ratatui::init(),
         }
     }
