@@ -2,41 +2,46 @@ use std::io;
 
 pub enum Result {
     Position(usize, usize),
-    Exit
+    Exit,
 }
 
 pub trait Input {
-    fn get(&self) -> Result;
+    fn get(&mut self) -> std::result::Result<Result, std::num::ParseIntError>;
 }
 
-fn parse_input(input: &str) -> std::result::Result<(usize, usize), std::num::ParseIntError> {
+fn parse_input(input: &str) -> std::result::Result<Result, std::num::ParseIntError> {
     let mut parts = input.trim().split(',');
 
     let i: usize = parts.next().unwrap().parse()?;
     let j: usize = parts.next().unwrap().parse()?;
 
-    Ok((i, j))
+    Ok(Result::Position(i, j))
 }
 
-pub struct TerminalInput {}
+pub struct TerminalInput {
+    buff: String,
+}
+
+impl TerminalInput {
+    pub fn new() -> TerminalInput {
+        TerminalInput {
+            buff: String::new(),
+        }
+    }
+}
 
 impl Input for TerminalInput {
-    fn get(&self) -> Result {
-        let mut input = String::new();
-        loop {
-            input.clear();
+    fn get(&mut self) -> std::result::Result<Result, std::num::ParseIntError> {
+        self.buff.clear();
 
-            println!("Choose a position (Format: i,j):");
-            io::stdin().read_line(&mut input).expect("failed to read from stdin");
+        io::stdin()
+            .read_line(&mut self.buff)
+            .expect("failed to read from stdin");
 
-            if input.trim_end() == "quit" {
-                return Result::Exit;
-            }
-
-            match parse_input(&input) {
-                Ok((i, j)) => break Result::Position(i,j),
-                Err(e) => println!("incorrect input: {}", e),
-            }
+        if self.buff.trim_end() == "quit" {
+            return Ok(Result::Exit);
         }
+
+        parse_input(&self.buff)
     }
 }

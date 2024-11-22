@@ -1,15 +1,17 @@
+use super::super::{game::MoveError, GameStatus};
 use super::Display;
-use super::super::{GameStatus, game::MoveError};
 use crossterm::event::{self, Event};
 use ratatui::{text::Text, Frame};
 
 pub struct TuiDisplay {
-    term : ratatui::DefaultTerminal
+    term: ratatui::DefaultTerminal,
 }
 
 impl TuiDisplay {
     pub fn new() -> Self {
-        TuiDisplay{term:ratatui::init()} 
+        TuiDisplay {
+            term: ratatui::init(),
+        }
     }
 }
 
@@ -18,8 +20,10 @@ impl Display for TuiDisplay {
         self.term.draw(draw).expect("failed to draw frame");
     }
 
-    fn draw_board(&self, state: [[crate::game::Cell; 3]; 3]) {
-        
+    fn draw_board(&self, state: [[crate::game::Cell; 3]; 3]) {}
+
+    fn message(&self, msg: impl std::fmt::Display) {
+        todo!()
     }
 }
 

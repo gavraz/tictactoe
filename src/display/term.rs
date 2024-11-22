@@ -1,6 +1,6 @@
 use super::Display;
+use crate::game::{Cell, GameStatus, MoveError, Outcome, Player};
 use std::fmt::Formatter;
-use crate::game::{GameStatus, Player, Cell, Outcome, MoveError};
 
 pub struct TerminalDisplay {}
 
@@ -13,22 +13,20 @@ impl TerminalDisplay {
 impl Display for TerminalDisplay {
     fn on_move(&mut self, status: std::result::Result<GameStatus, MoveError>) {
         match status {
-            Ok(status) => {
-                match status {
-                    GameStatus::Playing(player) => { println!("Current player: {}", player) }
-                    GameStatus::Ended(Outcome::Tie) => {
-                        println!("Game result: Tie");
-                    }
-                    GameStatus::Ended(Outcome::Win(player)) => {
-                        println!("Game result: {} wins", player);
-                    }
+            Ok(status) => match status {
+                GameStatus::Playing(player) => {
+                    println!("Current player: {}", player)
                 }
-            }
-            Err(e) => {
-                match e {
-                    MoveError::AlreadyOccupied => println!("Incorrect move: cell already occupied"),
-                    MoveError::OutOfBounds => println!("Incorrect move: input is out of bounds"),
+                GameStatus::Ended(Outcome::Tie) => {
+                    println!("Game result: Tie");
                 }
+                GameStatus::Ended(Outcome::Win(player)) => {
+                    println!("Game result: {} wins", player);
+                }
+            },
+            Err(e) => match e {
+                MoveError::AlreadyOccupied => println!("Incorrect move: cell already occupied"),
+                MoveError::OutOfBounds => println!("Incorrect move: input is out of bounds"),
             },
         }
     }
@@ -46,6 +44,10 @@ impl Display for TerminalDisplay {
             }
         }
         println!("└───┴───┴───┘");
+    }
+
+    fn message(&self, msg: impl std::fmt::Display) {
+        println!("{}", msg)
     }
 }
 

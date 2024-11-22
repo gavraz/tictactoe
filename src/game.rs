@@ -1,7 +1,7 @@
 use crate::game::Cell::Empty;
-use crate::game::Player::{X, O};
-use crate::game::Outcome::{Win, Tie};
-use crate::game::GameStatus::{Playing, Ended};
+use crate::game::GameStatus::{Ended, Playing};
+use crate::game::Outcome::{Tie, Win};
+use crate::game::Player::{O, X};
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum Player {
@@ -27,8 +27,8 @@ impl Cell {
 impl Player {
     fn opposite(&self) -> Player {
         match self {
-            X => { O }
-            O => { X }
+            X => O,
+            O => X,
         }
     }
 }
@@ -42,7 +42,7 @@ pub enum Outcome {
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum GameStatus {
     Playing(Player),
-    Ended(Outcome),    
+    Ended(Outcome),
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -51,7 +51,7 @@ pub enum MoveError {
     OutOfBounds,
 }
 
-const BOARD_SIZE:usize = 3;
+const BOARD_SIZE: usize = 3;
 pub struct Game {
     board: [[Cell; BOARD_SIZE]; BOARD_SIZE],
     current_player: Player,
@@ -104,7 +104,9 @@ impl Game {
                 return match row[0].player() {
                     Some(Player::X) => Ended(Win(X)),
                     Some(Player::O) => Ended(Win(O)),
-                    None => { continue; }
+                    None => {
+                        continue;
+                    }
                 };
             }
         }
@@ -114,7 +116,9 @@ impl Game {
                 return match self.board[0][i].player() {
                     Some(Player::X) => Ended(Win(X)),
                     Some(Player::O) => Ended(Win(O)),
-                    None => { continue; }
+                    None => {
+                        continue;
+                    }
                 };
             }
         }
@@ -153,6 +157,9 @@ mod tests {
         ];
         game.moves = 3;
 
-        assert_eq!(game.check(), GameStatus::Ended(crate::game::Outcome::Win(player)));
+        assert_eq!(
+            game.check(),
+            GameStatus::Ended(crate::game::Outcome::Win(player))
+        );
     }
 }
