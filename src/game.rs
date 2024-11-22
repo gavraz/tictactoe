@@ -61,7 +61,7 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         Game {
-            board: [[Empty; 3]; 3],
+            board: [[Empty; BOARD_SIZE]; BOARD_SIZE],
             current_player: X,
             moves: 0,
         }
@@ -101,29 +101,25 @@ impl Game {
 
         for row in self.board.iter() {
             if row[0] == row[1] && row[1] == row[2] {
-                return match row[0].player() {
-                    Some(Player::X) => Ended(Win(X)),
-                    Some(Player::O) => Ended(Win(O)),
-                    None => {
-                        continue;
-                    }
-                };
+                match row[0].player() {
+                    Some(Player::X) => return Ended(Win(X)),
+                    Some(Player::O) => return Ended(Win(O)),
+                    None => continue,
+                }
             }
         }
 
-        for i in 0..3 {
+        for i in 0..BOARD_SIZE {
             if self.board[0][i] == self.board[1][i] && self.board[1][i] == self.board[2][i] {
-                return match self.board[0][i].player() {
-                    Some(Player::X) => Ended(Win(X)),
-                    Some(Player::O) => Ended(Win(O)),
-                    None => {
-                        continue;
-                    }
-                };
+                match self.board[0][i].player() {
+                    Some(Player::X) => return Ended(Win(X)),
+                    Some(Player::O) => return Ended(Win(O)),
+                    None => continue,
+                }
             }
         }
 
-        if self.moves == 9 {
+        if usize::from(self.moves) == BOARD_SIZE*BOARD_SIZE {
             return Ended(Tie);
         }
 
@@ -131,7 +127,7 @@ impl Game {
         Playing(self.current_player)
     }
 
-    pub fn state(&self) -> [[Cell; 3]; 3] {
+    pub fn state(&self) -> [[Cell; BOARD_SIZE]; BOARD_SIZE] {
         return self.board.clone();
     }
 }

@@ -8,7 +8,7 @@ use game::GameStatus;
 use input::Input;
 
 fn main() {
-    let mut game: Game = Game::new();
+    let mut game = Game::new();
     let mut display = display::term::TerminalDisplay::new();
     let mut input = input::TerminalInput::new();
 
