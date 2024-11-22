@@ -60,7 +60,7 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Self {
-        Game {
+        Self {
             board: [[Empty; BOARD_SIZE]; BOARD_SIZE],
             current_player: X,
             moves: 0,
