@@ -1,15 +1,18 @@
+use super::Display;
 use std::fmt::Formatter;
 use crate::game::{GameResult, Player};
 use crate::game::Cell;
 
-pub struct Display {}
+pub struct TerminalDisplay {}
 
-impl Display {
-    pub fn new() -> Display {
-        Display {}
+impl TerminalDisplay {
+    pub fn new() -> Self {
+        TerminalDisplay {}
     }
+}
 
-    pub fn on_move(&self, result: GameResult) {
+impl Display for TerminalDisplay {
+    fn on_move(&mut self, result: GameResult) {
         match result {
             GameResult::Playing(player) => { println!("Current player: {}", player) }
             GameResult::Tie => {
@@ -23,7 +26,7 @@ impl Display {
         }
     }
 
-    pub fn draw_board(&self, state: [[Cell; 3]; 3]) {
+    fn draw_board(&self, state: [[Cell; 3]; 3]) {
         println!("┌───┬───┬───┐");
         for (i, row) in state.iter().enumerate() {
             print!("│");

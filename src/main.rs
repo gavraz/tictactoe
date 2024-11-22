@@ -6,7 +6,7 @@ use crate::game::{Game, GameResult};
 
 fn main() {
     let mut game: Game = Game::new();
-    let display: display::Display = display::Display::new();
+    let display: &mut dyn display::Display = &mut display::tui::TuiDisplay::new();
 
     loop {
         display.draw_board(game.state());
