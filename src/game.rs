@@ -99,7 +99,7 @@ impl Game {
             }
         }
 
-        for row in self.board.iter() {
+        for row in self.board {
             if row[0] == row[1] && row[1] == row[2] {
                 match row[0].player() {
                     Some(Player::X) => return Ended(Win(X)),

@@ -35,7 +35,7 @@ impl Display for TerminalDisplay {
         println!("┌───┬───┬───┐");
         for (i, row) in state.iter().enumerate() {
             print!("│");
-            for c in row.iter() {
+            for c in row {
                 print!(" {c} │");
             }
             println!();
