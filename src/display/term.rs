@@ -15,7 +15,7 @@ impl Display for TerminalDisplay {
         match status {
             Ok(status) => match status {
                 GameStatus::Playing(player) => {
-                    println!("Current player: {}", player)
+                    println!("Current player: {}", player);
                 }
                 GameStatus::Ended(Outcome::Tie) => {
                     println!("Game result: Tie");
@@ -47,7 +47,7 @@ impl Display for TerminalDisplay {
     }
 
     fn message(&self, msg: impl std::fmt::Display) {
-        println!("{}", msg)
+        println!("{}", msg);
     }
 }
 
