@@ -16,16 +16,16 @@ pub enum Cell {
 }
 
 impl Cell {
-    fn player(&self) -> Option<Player> {
+    fn player(self) -> Option<Player> {
         match self {
-            Self::Filled(player) => Some(*player),
+            Self::Filled(player) => Some(player),
             Empty => None,
         }
     }
 }
 
 impl Player {
-    fn opposite(&self) -> Self {
+    fn opposite(self) -> Self {
         match self {
             X => O,
             O => X,
