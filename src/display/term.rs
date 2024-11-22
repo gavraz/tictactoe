@@ -15,13 +15,13 @@ impl Display for TerminalDisplay {
         match status {
             Ok(status) => match status {
                 GameStatus::Playing(player) => {
-                    println!("Current player: {}", player);
+                    println!("Current player: {player}");
                 }
                 GameStatus::Ended(Outcome::Tie) => {
                     println!("Game result: Tie");
                 }
                 GameStatus::Ended(Outcome::Win(player)) => {
-                    println!("Game result: {} wins", player);
+                    println!("Game result: {player} wins");
                 }
             },
             Err(e) => match e {
@@ -36,7 +36,7 @@ impl Display for TerminalDisplay {
         for (i, row) in state.iter().enumerate() {
             print!("│");
             for c in row.iter() {
-                print!(" {} │", c);
+                print!(" {c} │");
             }
             println!();
             if i < 2 {
@@ -47,7 +47,7 @@ impl Display for TerminalDisplay {
     }
 
     fn message(&self, msg: impl std::fmt::Display) {
-        println!("{}", msg);
+        println!("{msg}");
     }
 }
 
