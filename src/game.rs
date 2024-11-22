@@ -3,13 +3,13 @@ use crate::game::GameStatus::{Ended, Playing};
 use crate::game::Outcome::{Tie, Win};
 use crate::game::Player::{O, X};
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Player {
     X,
     O,
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Cell {
     Filled(Player),
     Empty,
@@ -33,19 +33,19 @@ impl Player {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Outcome {
     Win(Player),
     Tie,
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum GameStatus {
     Playing(Player),
     Ended(Outcome),
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum MoveError {
     AlreadyOccupied,
     OutOfBounds,
