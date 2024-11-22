@@ -2,13 +2,14 @@ mod game;
 mod display;
 mod input;
 
-use crate::game::{Game, GameResult};
+use game::GameStatus;
+use crate::game::Game;
 
 fn main() {
     let mut game: Game = Game::new();
     let display: &mut dyn display::Display = &mut display::term::TerminalDisplay::new();
     let input: &mut dyn input::Input = &mut input::TerminalInput{};
-    
+
     loop {
         display.draw_board(game.state());
 
@@ -17,13 +18,12 @@ fn main() {
             input::Result::Exit => return,
         };
 
-        let move_result = game.apply(i, j);
-        display.on_move(move_result);
+        let status = game.apply(i, j);
+        display.on_move(status);
 
-        match move_result {
-            GameResult::Tie => { break; }
-            GameResult::Winner(_) => { break; }
-            _ => ()
+        match status {
+            Ok(game::GameStatus::Ended(_)) => break,
+            _ => {},
         };
     }
 

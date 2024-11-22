@@ -1,4 +1,5 @@
 use super::Display;
+use super::super::{GameStatus, game::MoveError};
 use crossterm::event::{self, Event};
 use ratatui::{text::Text, Frame};
 
@@ -13,7 +14,7 @@ impl TuiDisplay {
 }
 
 impl Display for TuiDisplay {
-    fn on_move(&mut self, result: crate::game::GameResult) {
+    fn on_move(&mut self, status: std::result::Result<GameStatus, MoveError>) {
         self.term.draw(draw).expect("failed to draw frame");
     }
 

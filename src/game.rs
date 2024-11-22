@@ -1,13 +1,7 @@
-use crate::game::Cell::{Empty, PlayerO, PlayerX};
+use crate::game::Cell::Empty;
 use crate::game::Player::{X, O};
-use crate::game::GameResult::{AlreadyTaken, InvalidMove, Playing, Tie, Winner};
-
-#[derive(Copy, Clone, PartialEq)]
-pub enum Cell {
-    PlayerX,
-    PlayerO,
-    Empty,
-}
+use crate::game::Outcome::{Win, Tie};
+use crate::game::GameStatus::{Playing, Ended};
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum Player {
@@ -15,14 +9,22 @@ pub enum Player {
     O,
 }
 
-impl Player {
-    pub fn to_cell(&self) -> Cell {
+#[derive(Copy, Clone, PartialEq)]
+pub enum Cell {
+    Filled(Player),
+    Empty,
+}
+
+impl Cell {
+    fn player(&self) -> Option<Player> {
         match self {
-            X => { PlayerX }
-            O => { PlayerO }
+            Cell::Filled(player) => Some(*player),
+            Empty => None,
         }
     }
+}
 
+impl Player {
     fn opposite(&self) -> Player {
         match self {
             X => { O }
@@ -31,18 +33,27 @@ impl Player {
     }
 }
 
-
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub enum GameResult {
-    Playing(Player),
+pub enum Outcome {
+    Win(Player),
     Tie,
-    Winner(Player),
-    AlreadyTaken,
-    InvalidMove,
 }
 
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum GameStatus {
+    Playing(Player),
+    Ended(Outcome),    
+}
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum MoveError {
+    AlreadyOccupied,
+    OutOfBounds,
+}
+
+const BOARD_SIZE:usize = 3;
 pub struct Game {
-    board: [[Cell; 3]; 3],
+    board: [[Cell; BOARD_SIZE]; BOARD_SIZE],
     current_player: Player,
     moves: u8,
 }
@@ -56,60 +67,60 @@ impl Game {
         }
     }
 
-    pub fn apply(&mut self, i: usize, j: usize) -> GameResult {
+    pub fn apply(&mut self, i: usize, j: usize) -> std::result::Result<GameStatus, MoveError> {
         if i > 2 || j > 2 {
-            return InvalidMove;
+            return Err(MoveError::OutOfBounds);
         }
 
         if self.board[i][j] != Empty {
-            return AlreadyTaken;
+            return Err(MoveError::AlreadyOccupied);
         }
 
-        self.board[i][j] = self.current_player.to_cell();
+        self.board[i][j] = Cell::Filled(self.current_player);
         self.moves += 1;
 
-        return self.check();
+        return Ok(self.check());
     }
 
-    fn check(&mut self) -> GameResult {
+    fn check(&mut self) -> GameStatus {
         if self.board[0][0] == self.board[1][1] && self.board[1][1] == self.board[2][2] {
-            match self.board[0][0] {
-                PlayerX => return Winner(X),
-                PlayerO => return Winner(O),
-                Empty => (),
+            match self.board[0][0].player() {
+                Some(X) => return Ended(Win(X)),
+                Some(O) => return Ended(Win(O)),
+                None => (),
             }
         }
 
         if self.board[0][2] == self.board[1][1] && self.board[1][1] == self.board[2][0] {
-            match self.board[0][2] {
-                PlayerX => return Winner(X),
-                PlayerO => return Winner(O),
-                Empty => (),
+            match self.board[0][2].player() {
+                Some(X) => return Ended(Win(X)),
+                Some(O) => return Ended(Win(O)),
+                None => (),
             }
         }
 
         for row in self.board.iter() {
             if row[0] == row[1] && row[1] == row[2] {
-                return match row[0] {
-                    PlayerX => { Winner(X) }
-                    PlayerO => { Winner(O) }
-                    Empty => { continue; }
+                return match row[0].player() {
+                    Some(Player::X) => Ended(Win(X)),
+                    Some(Player::O) => Ended(Win(O)),
+                    None => { continue; }
                 };
             }
         }
 
         for i in 0..3 {
             if self.board[0][i] == self.board[1][i] && self.board[1][i] == self.board[2][i] {
-                return match self.board[0][i] {
-                    PlayerX => { Winner(X) }
-                    PlayerO => { Winner(O) }
-                    Empty => { continue; }
+                return match self.board[0][i].player() {
+                    Some(Player::X) => Ended(Win(X)),
+                    Some(Player::O) => Ended(Win(O)),
+                    None => { continue; }
                 };
             }
         }
 
         if self.moves == 9 {
-            return Tie;
+            return Ended(Tie);
         }
 
         self.current_player = self.current_player.opposite();
@@ -123,7 +134,7 @@ impl Game {
 
 #[cfg(test)]
 mod tests {
-    use crate::game::{Cell, Game, GameResult, Player};
+    use crate::game::{Cell, Game, GameStatus, Player};
 
     #[test]
     fn test_check_win_in_rows() {
@@ -134,7 +145,7 @@ mod tests {
     fn test_win_in_rows(player: Player) {
         let mut game = Game::new();
 
-        let player_cell = player.to_cell();
+        let player_cell = Cell::Filled(player);
         game.board = [
             [player_cell, player_cell, player_cell],
             [Cell::Empty, Cell::Empty, Cell::Empty],
@@ -142,6 +153,6 @@ mod tests {
         ];
         game.moves = 3;
 
-        assert_eq!(game.check(), GameResult::Winner(player));
+        assert_eq!(game.check(), GameStatus::Ended(crate::game::Outcome::Win(player)));
     }
 }
