@@ -23,8 +23,8 @@ pub struct TerminalInput {
 }
 
 impl TerminalInput {
-    pub fn new() -> TerminalInput {
-        TerminalInput {
+    pub fn new() -> Self {
+        Self {
             buff: String::new(),
         }
     }

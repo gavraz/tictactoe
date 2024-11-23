@@ -3,29 +3,29 @@ use crate::game::GameStatus::{Ended, Playing};
 use crate::game::Outcome::{Tie, Win};
 use crate::game::Player::{O, X};
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Player {
     X,
     O,
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Cell {
     Filled(Player),
     Empty,
 }
 
 impl Cell {
-    fn player(&self) -> Option<Player> {
+    fn player(self) -> Option<Player> {
         match self {
-            Cell::Filled(player) => Some(*player),
+            Self::Filled(player) => Some(player),
             Empty => None,
         }
     }
 }
 
 impl Player {
-    fn opposite(&self) -> Player {
+    fn opposite(self) -> Self {
         match self {
             X => O,
             O => X,
@@ -33,19 +33,19 @@ impl Player {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Outcome {
     Win(Player),
     Tie,
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum GameStatus {
     Playing(Player),
     Ended(Outcome),
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum MoveError {
     AlreadyOccupied,
     OutOfBounds,
@@ -59,8 +59,8 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new() -> Game {
-        Game {
+    pub fn new() -> Self {
+        Self {
             board: [[Empty; BOARD_SIZE]; BOARD_SIZE],
             current_player: X,
             moves: 0,
@@ -79,7 +79,7 @@ impl Game {
         self.board[i][j] = Cell::Filled(self.current_player);
         self.moves += 1;
 
-        return Ok(self.check());
+        Ok(self.check())
     }
 
     fn check(&mut self) -> GameStatus {
@@ -99,7 +99,7 @@ impl Game {
             }
         }
 
-        for row in self.board.iter() {
+        for row in self.board {
             if row[0] == row[1] && row[1] == row[2] {
                 match row[0].player() {
                     Some(Player::X) => return Ended(Win(X)),
@@ -119,7 +119,7 @@ impl Game {
             }
         }
 
-        if usize::from(self.moves) == BOARD_SIZE*BOARD_SIZE {
+        if usize::from(self.moves) == BOARD_SIZE * BOARD_SIZE {
             return Ended(Tie);
         }
 
@@ -128,7 +128,7 @@ impl Game {
     }
 
     pub fn state(&self) -> [[Cell; BOARD_SIZE]; BOARD_SIZE] {
-        return self.board.clone();
+        self.board
     }
 }
 

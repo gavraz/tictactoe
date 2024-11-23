@@ -20,7 +20,7 @@ fn main() {
             Ok(input::Result::Position(i, j)) => (i, j),
             Ok(input::Result::Exit) => return,
             Err(e) => {
-                display.message(format!("Incorrect input: {}", e));
+                display.message(format!("Incorrect input: {e}"));
                 continue;
             }
         };

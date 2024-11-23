@@ -6,7 +6,7 @@ pub struct TerminalDisplay {}
 
 impl TerminalDisplay {
     pub fn new() -> Self {
-        TerminalDisplay {}
+        Self {}
     }
 }
 
@@ -15,13 +15,13 @@ impl Display for TerminalDisplay {
         match status {
             Ok(status) => match status {
                 GameStatus::Playing(player) => {
-                    println!("Current player: {}", player)
+                    println!("Current player: {player}");
                 }
                 GameStatus::Ended(Outcome::Tie) => {
                     println!("Game result: Tie");
                 }
                 GameStatus::Ended(Outcome::Win(player)) => {
-                    println!("Game result: {} wins", player);
+                    println!("Game result: {player} wins");
                 }
             },
             Err(e) => match e {
@@ -35,8 +35,8 @@ impl Display for TerminalDisplay {
         println!("┌───┬───┬───┐");
         for (i, row) in state.iter().enumerate() {
             print!("│");
-            for c in row.iter() {
-                print!(" {} │", c);
+            for c in row {
+                print!(" {c} │");
             }
             println!();
             if i < 2 {
@@ -47,16 +47,16 @@ impl Display for TerminalDisplay {
     }
 
     fn message(&self, msg: impl std::fmt::Display) {
-        println!("{}", msg)
+        println!("{msg}");
     }
 }
 
 impl std::fmt::Display for Cell {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Cell::Filled(Player::X) => write!(f, "X"),
-            Cell::Filled(Player::O) => write!(f, "O"),
-            Cell::Empty => write!(f, " "),
+            Self::Filled(Player::X) => write!(f, "X"),
+            Self::Filled(Player::O) => write!(f, "O"),
+            Self::Empty => write!(f, " "),
         }
     }
 }
@@ -64,8 +64,8 @@ impl std::fmt::Display for Cell {
 impl std::fmt::Display for Player {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Player::X => write!(f, "X"),
-            Player::O => write!(f, "O"),
+            Self::X => write!(f, "X"),
+            Self::O => write!(f, "O"),
         }
     }
 }
