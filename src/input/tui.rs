@@ -6,7 +6,9 @@ pub struct Input {
 
 impl Input {
     pub fn new() -> Self {
-        Self{ buff: String::new() }
+        Self {
+            buff: String::new(),
+        }
     }
 }
 
@@ -17,22 +19,17 @@ impl super::Input for Input {
                 match key_event.code {
                     KeyCode::Char(c) => {
                         self.buff.push(c);
-                        // print!("{}", c);
-                        // io::stdout().flush()?; // Flush to show the typed character
                     }
                     KeyCode::Enter => {
-                        // println!(); // Newline after Enter key
                         let input = std::mem::take(&mut self.buff);
                         if input == "quit" {
                             return Ok(super::Result::Exit);
-                        } 
+                        }
                         return super::parse_input(&input);
                     }
                     KeyCode::Backspace => {
                         if !self.buff.is_empty() {
-                            self.buff.pop(); // Remove last character from buffer
-                            // print!("\r{}\r{}", " ".repeat(self.buff.len() + 1), input); // Overwrite line
-                            // io::stdout().flush()?; // Flush updated input
+                            self.buff.pop();
                         }
                     }
                     _ => {}
@@ -42,7 +39,7 @@ impl super::Input for Input {
 
         Ok(super::Result::None)
     }
-    
+
     fn wait_exit(&mut self) {
         loop {
             match self.get() {
