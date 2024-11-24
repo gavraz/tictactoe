@@ -4,7 +4,7 @@ mod input;
 
 use crate::display::Display;
 use crate::game::Game;
-use game::GameStatus;
+use game::Status;
 use input::Input;
 
 fn main() {
@@ -29,7 +29,7 @@ fn main() {
         display.on_change(status);
 
         match status {
-            Ok(game::GameStatus::Ended(_)) => break,
+            Ok(game::Status::Ended(_)) => break,
             _ => {}
         };
     }

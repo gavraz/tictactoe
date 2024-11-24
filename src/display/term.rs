@@ -1,5 +1,5 @@
 use super::Display;
-use crate::game::{Cell, GameStatus, MoveError, Outcome, Player};
+use crate::game::{Cell, Status, MoveError, Outcome, Player};
 use std::fmt::Formatter;
 
 pub struct TerminalDisplay {}
@@ -11,16 +11,16 @@ impl TerminalDisplay {
 }
 
 impl Display for TerminalDisplay {
-    fn on_change(&mut self, status: std::result::Result<GameStatus, MoveError>) {
+    fn on_change(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {
-                GameStatus::Playing(player) => {
+                Status::Playing(player) => {
                     println!("Current player: {player}");
                 }
-                GameStatus::Ended(Outcome::Tie) => {
+                Status::Ended(Outcome::Tie) => {
                     println!("Game result: Tie");
                 }
-                GameStatus::Ended(Outcome::Win(player)) => {
+                Status::Ended(Outcome::Win(player)) => {
                     println!("Game result: {player} wins");
                 }
             },

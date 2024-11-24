@@ -1,6 +1,6 @@
 use crate::game::{Cell, Player, BOARD_SIZE};
 
-use super::super::{game::MoveError, game::Outcome, GameStatus};
+use super::super::{game::MoveError, game::Outcome, Status};
 use super::Display;
 use crossterm::event::{self, Event};
 use ratatui::text::{Line, Text};
@@ -29,16 +29,16 @@ impl TuiDisplay {
 }
 
 impl Display for TuiDisplay {
-    fn on_change(&mut self, status: std::result::Result<GameStatus, MoveError>) {
+    fn on_change(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {
-                GameStatus::Playing(player) => {
+                Status::Playing(player) => {
                     self.msg = format!("Current player: {player}\nChoose a position (Format: i,j):");
                 }
-                GameStatus::Ended(Outcome::Tie) => {
+                Status::Ended(Outcome::Tie) => {
                     self.msg = format!("Game result: Tie");
                 }
-                GameStatus::Ended(Outcome::Win(player)) => {
+                Status::Ended(Outcome::Win(player)) => {
                     self.msg = format!("Game result: {player} wins");
                 }
             },

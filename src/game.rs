@@ -1,5 +1,5 @@
 use crate::game::Cell::Empty;
-use crate::game::GameStatus::{Ended, Playing};
+use crate::game::Status::{Ended, Playing};
 use crate::game::Outcome::{Tie, Win};
 use crate::game::Player::{O, X};
 
@@ -40,7 +40,7 @@ pub enum Outcome {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum GameStatus {
+pub enum Status {
     Playing(Player),
     Ended(Outcome),
 }
@@ -67,7 +67,7 @@ impl Game {
         }
     }
 
-    pub fn apply(&mut self, i: usize, j: usize) -> std::result::Result<GameStatus, MoveError> {
+    pub fn apply(&mut self, i: usize, j: usize) -> std::result::Result<Status, MoveError> {
         if i > 2 || j > 2 {
             return Err(MoveError::OutOfBounds);
         }
@@ -82,7 +82,7 @@ impl Game {
         Ok(self.check())
     }
 
-    fn check(&mut self) -> GameStatus {
+    fn check(&mut self) -> Status {
         if self.board[0][0] == self.board[1][1] && self.board[1][1] == self.board[2][2] {
             match self.board[0][0].player() {
                 Some(X) => return Ended(Win(X)),
@@ -134,7 +134,7 @@ impl Game {
 
 #[cfg(test)]
 mod tests {
-    use crate::game::{Cell, Game, GameStatus, Player};
+    use crate::game::{Cell, Game, Status, Player};
 
     #[test]
     fn test_check_win_in_rows() {
@@ -155,7 +155,7 @@ mod tests {
 
         assert_eq!(
             game.check(),
-            GameStatus::Ended(crate::game::Outcome::Win(player))
+            Status::Ended(crate::game::Outcome::Win(player))
         );
     }
 }
