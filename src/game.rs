@@ -51,7 +51,7 @@ pub enum MoveError {
     OutOfBounds,
 }
 
-const BOARD_SIZE: usize = 3;
+pub const BOARD_SIZE: usize = 3;
 pub struct Game {
     board: [[Cell; BOARD_SIZE]; BOARD_SIZE],
     current_player: Player,

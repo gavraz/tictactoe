@@ -11,7 +11,7 @@ impl TerminalDisplay {
 }
 
 impl Display for TerminalDisplay {
-    fn on_move(&mut self, status: std::result::Result<GameStatus, MoveError>) {
+    fn on_change(&mut self, status: std::result::Result<GameStatus, MoveError>) {
         match status {
             Ok(status) => match status {
                 GameStatus::Playing(player) => {
@@ -31,7 +31,7 @@ impl Display for TerminalDisplay {
         }
     }
 
-    fn draw_board(&self, state: [[Cell; 3]; 3]) {
+    fn draw(&mut self, state: [[Cell; 3]; 3]) {
         println!("┌───┬───┬───┐");
         for (i, row) in state.iter().enumerate() {
             print!("│");
@@ -45,9 +45,12 @@ impl Display for TerminalDisplay {
         }
         println!("└───┴───┴───┘");
     }
-
-    fn message(&self, msg: impl std::fmt::Display) {
-        println!("{msg}");
+    
+    fn on_input(&mut self, res: &std::result::Result<crate::input::Result, std::num::ParseIntError>) {
+        match res {
+            Ok(_) => {},
+            Err(e) => println!("Incorrect input{e}\nChoose a position (Format: i,j):"),
+        }
     }
 }
 
