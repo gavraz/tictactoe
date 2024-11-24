@@ -36,7 +36,7 @@ impl super::Display for Display {
             Ok(status) => match status {
                 Status::Playing(player) => {
                     self.msg =
-                        format!("Current player: {player}\nChoose a position (Format: i,j):");
+                        format!("Current player: {player}\n");
                 }
                 Status::Ended(Outcome::Tie) => {
                     self.msg = format!("Game result: Tie");
@@ -89,10 +89,25 @@ impl super::Display for Display {
                 );
             f.render_widget(game_area, chunks[1]);
 
-            // Message bar
+            // -- bottom bar --
+            let bottom_bar = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([
+                Constraint::Percentage(50),
+                Constraint::Percentage(50),
+            ])
+            .split(chunks[2]);
+
+            // 1. Message bar
             let message_bar = Paragraph::new(self.msg.clone())
                 .block(Block::default().borders(Borders::ALL).title("Message"));
-            f.render_widget(message_bar, chunks[2]);
+            f.render_widget(message_bar, bottom_bar[0]);
+
+            // 2. Instructions bar
+            let instructions = "-Enter <quit> to exit the game\n-Choose a position (Format: i,j):";
+            let message_bar = Paragraph::new(instructions)
+                .block(Block::default().borders(Borders::ALL).title("Instructions"));
+            f.render_widget(message_bar, bottom_bar[1]);
         });
     }
 
@@ -102,7 +117,7 @@ impl super::Display for Display {
     ) {
         match res {
             Ok(_) => {}
-            Err(e) => self.msg = format!("Incorrect input{e}\nChoose a position (Format: i,j):"),
+            Err(e) => self.msg = format!("Incorrect input: {e}\n"),
         };
     }
 }
