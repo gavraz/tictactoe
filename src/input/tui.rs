@@ -42,4 +42,13 @@ impl super::Input for Input {
 
         Ok(super::Result::None)
     }
+    
+    fn wait_exit(&mut self) {
+        loop {
+            match self.get() {
+                Ok(super::Result::Exit) => return,
+                _ => (),
+            };
+        }
+    }
 }

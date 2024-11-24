@@ -22,7 +22,7 @@ fn main() {
         display.on_input(&input_res);
         let (i, j) = match input_res {
             Ok(input::Result::Position(i, j)) => (i, j),
-            Ok(input::Result::Exit) => break,
+            Ok(input::Result::Exit) => return,
             _ => continue,
         };
         let status = game.apply(i, j);
@@ -35,4 +35,6 @@ fn main() {
     }
 
     display.draw(game.state());
+
+    input.wait_exit();
 }

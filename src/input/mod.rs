@@ -9,6 +9,7 @@ pub enum Result {
 
 pub trait Input {
     fn get(&mut self) -> std::result::Result<Result, std::num::ParseIntError>;
+    fn wait_exit(&mut self);
 }
 
 pub fn parse_input(input: &str) -> std::result::Result<Result, std::num::ParseIntError> {

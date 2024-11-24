@@ -24,4 +24,6 @@ impl super::Input for Input {
 
         super::parse_input(&self.buff)
     }
+    
+    fn wait_exit(&mut self) {}
 }
