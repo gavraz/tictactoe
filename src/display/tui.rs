@@ -1,25 +1,21 @@
 use crate::game::{Cell, Player, BOARD_SIZE};
 
 use super::super::{game::MoveError, game::Outcome, Status};
-use super::Display;
-use crossterm::event::{self, Event};
-use ratatui::text::{Line, Text};
-use ratatui::widgets::Padding;
+use ratatui::layout::{Alignment, Constraint, Direction, Layout};
 use ratatui::{
-    backend::CrosstermBackend,
-    layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Style},
     text::Span,
+    text::{Line, Text},
+    widgets::Padding,
     widgets::{Block, Borders, Paragraph},
-    Frame, Terminal,
 };
 
-pub struct TuiDisplay {
+pub struct Display {
     term: ratatui::DefaultTerminal,
     msg: String,
 }
 
-impl TuiDisplay {
+impl Display {
     pub fn new() -> Self {
         Self {
             term: ratatui::init(),
@@ -28,12 +24,19 @@ impl TuiDisplay {
     }
 }
 
-impl Display for TuiDisplay {
+impl Drop for Display {
+    fn drop(&mut self) {
+        ratatui::restore();
+    }
+}
+
+impl super::Display for Display {
     fn on_change(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {
                 Status::Playing(player) => {
-                    self.msg = format!("Current player: {player}\nChoose a position (Format: i,j):");
+                    self.msg =
+                        format!("Current player: {player}\nChoose a position (Format: i,j):");
                 }
                 Status::Ended(Outcome::Tie) => {
                     self.msg = format!("Game result: Tie");
@@ -92,10 +95,13 @@ impl Display for TuiDisplay {
             f.render_widget(message_bar, chunks[2]);
         });
     }
-    
-    fn on_input(&mut self, res: &std::result::Result<super::super::input::Result, std::num::ParseIntError>) {
+
+    fn on_input(
+        &mut self,
+        res: &std::result::Result<super::super::input::Result, std::num::ParseIntError>,
+    ) {
         match res {
-            Ok(_) => {},
+            Ok(_) => {}
             Err(e) => self.msg = format!("Incorrect input{e}\nChoose a position (Format: i,j):"),
         };
     }

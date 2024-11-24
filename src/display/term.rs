@@ -1,16 +1,15 @@
-use super::Display;
 use crate::game::{Cell, Status, MoveError, Outcome, Player};
 use std::fmt::Formatter;
 
-pub struct TerminalDisplay {}
+pub struct Display {}
 
-impl TerminalDisplay {
+impl Display {
     pub fn new() -> Self {
         Self {}
     }
 }
 
-impl Display for TerminalDisplay {
+impl super::Display for Display {
     fn on_change(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {

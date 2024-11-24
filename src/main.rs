@@ -9,19 +9,19 @@ use input::Input;
 
 fn main() {
     let mut game = Game::new();
-    let mut display = display::tui::TuiDisplay::new();
-    let mut input = input::CrossTermInput::new();
+    let mut display = display::tui::Display::new();
+    let mut input = input::tui::Input::new();
     // let mut display = display::term::TerminalDisplay::new();
     // let mut input = input::TerminalInput::new();
 
     loop {
         display.draw(game.state());
 
-        let input = input.get();
+        let input_res = input.get();
 
-        display.on_input(&input);
-        let (i,j) = match input {
-            Ok(input::Result::Position(i, j)) => (i,j),
+        display.on_input(&input_res);
+        let (i, j) = match input_res {
+            Ok(input::Result::Position(i, j)) => (i, j),
             Ok(input::Result::Exit) => break,
             _ => continue,
         };
