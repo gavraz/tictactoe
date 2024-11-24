@@ -12,7 +12,7 @@ use ratatui::{
 
 pub struct Display {
     term: ratatui::DefaultTerminal,
-    msg: String,
+    move_feedback: String,
     state: State,
 }
 
@@ -20,7 +20,7 @@ impl Display {
     pub fn new(state: State) -> Self {
         Self {
             term: ratatui::init(),
-            msg: String::new(),
+            move_feedback: String::new(),
             state,
         }
     }
@@ -36,22 +36,22 @@ impl super::super::display::Display for Display {
     fn on_move(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {
-                Status::Playing(player) => {
-                    self.msg = format!("Current player: {player}\n");
+                Status::Playing(_) => {
+                    self.move_feedback = format!("Nice move!");
                 }
                 Status::Ended(Outcome::Tie) => {
-                    self.msg = format!("Game result: Tie");
+                    self.move_feedback = format!("Great match! It is a tie!");
                 }
                 Status::Ended(Outcome::Win(player)) => {
-                    self.msg = format!("Game result: {player} wins");
+                    self.move_feedback = format!("Great match! {player} wins!");
                 }
             },
             Err(e) => match e {
                 MoveError::AlreadyOccupied => {
-                    self.msg = format!("Incorrect move: cell already occupied")
+                    self.move_feedback = format!("Incorrect move: cell already occupied")
                 }
                 MoveError::OutOfBounds => {
-                    self.msg = format!("Incorrect move: input is out of bounds")
+                    self.move_feedback = format!("Incorrect move: input is out of bounds")
                 }
             },
         }
@@ -97,7 +97,12 @@ impl super::super::display::Display for Display {
                 .split(chunks[2]);
 
             // 1. Message bar
-            let message_bar = Paragraph::new(self.msg.clone())
+            let status = match self.state.status {
+                Status::Playing(player) => format!("Status: Playing ({player})"),
+                Status::Ended(_) => format!("Status: Game Ended"),
+            };
+            let msg = format!("{}\n{}\n", status, self.move_feedback);
+            let message_bar = Paragraph::new(msg.clone())
                 .block(Block::default().borders(Borders::ALL).title("Message"));
             f.render_widget(message_bar, bottom_bar[0]);
 
@@ -115,10 +120,10 @@ impl super::super::display::Display for Display {
     ) {
         match res {
             Ok(_) => {}
-            Err(e) => self.msg = format!("Incorrect input: {e}\n"),
+            Err(e) => self.move_feedback = format!("Incorrect input: {e}\n"),
         };
     }
-    
+
     fn update(&mut self, state: State) {
         self.state = state;
     }
