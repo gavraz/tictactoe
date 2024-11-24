@@ -11,8 +11,8 @@ fn main() {
     let mut game = Game::new();
     let mut display = display::tui::Display::new();
     let mut input = input::tui::Input::new();
-    // let mut display = display::term::TerminalDisplay::new();
-    // let mut input = input::TerminalInput::new();
+    // let mut display = display::term::Display::new();
+    // let mut input = input::term::Input::new();
 
     loop {
         display.draw(game.state());

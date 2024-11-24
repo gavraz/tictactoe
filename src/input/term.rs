@@ -1,8 +1,8 @@
-pub struct TerminalInput {
+pub struct Input {
     buff: String,
 }
 
-impl TerminalInput {
+impl Input {
     pub fn new() -> Self {
         Self {
             buff: String::new(),
@@ -10,7 +10,7 @@ impl TerminalInput {
     }
 }
 
-impl super::Input for TerminalInput {
+impl super::Input for Input {
     fn get(&mut self) -> std::result::Result<super::Result, std::num::ParseIntError> {
         self.buff.clear();
 
