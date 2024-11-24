@@ -1,6 +1,3 @@
-pub mod term;
-pub mod tui;
-
 pub enum Result {
     Position(usize, usize),
     Exit,

@@ -32,7 +32,7 @@ impl Drop for Display {
     }
 }
 
-impl super::Display for Display {
+impl super::super::display::Display for Display {
     fn on_move(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {

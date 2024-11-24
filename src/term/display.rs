@@ -1,5 +1,6 @@
 use crate::game::{Cell, MoveError, Outcome, Player, State, Status};
 use std::fmt::Formatter;
+use super::super::display;
 
 pub struct Display {
     state: State,
@@ -11,7 +12,7 @@ impl Display {
     }
 }
 
-impl super::Display for Display {
+impl display::Display for Display {
     fn on_move(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {
@@ -68,15 +69,6 @@ impl std::fmt::Display for Cell {
             Self::Filled(Player::X) => write!(f, "X"),
             Self::Filled(Player::O) => write!(f, "O"),
             Self::Empty => write!(f, " "),
-        }
-    }
-}
-
-impl std::fmt::Display for Player {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::X => write!(f, "X"),
-            Self::O => write!(f, "O"),
         }
     }
 }

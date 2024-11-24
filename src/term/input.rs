@@ -1,3 +1,5 @@
+use super::super::input;
+
 pub struct Input {
     buff: String,
 }
@@ -10,8 +12,8 @@ impl Input {
     }
 }
 
-impl super::Input for Input {
-    fn get(&mut self) -> std::result::Result<super::Result, std::num::ParseIntError> {
+impl input::Input for Input {
+    fn get(&mut self) -> std::result::Result<input::Result, std::num::ParseIntError> {
         self.buff.clear();
 
         std::io::stdin()
@@ -19,10 +21,10 @@ impl super::Input for Input {
             .expect("failed to read from stdin");
 
         if self.buff.trim_end() == "quit" {
-            return Ok(super::Result::Exit);
+            return Ok(input::Result::Exit);
         }
 
-        super::parse_input(&self.buff)
+        input::parse_input(&self.buff)
     }
     
     fn wait_exit(&mut self) {}

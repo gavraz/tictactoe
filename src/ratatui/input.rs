@@ -1,4 +1,5 @@
 use crossterm::event::{self, Event, KeyCode};
+use super::super::input;
 
 pub struct Input {
     buff: String,
@@ -12,8 +13,8 @@ impl Input {
     }
 }
 
-impl super::Input for Input {
-    fn get(&mut self) -> std::result::Result<super::Result, std::num::ParseIntError> {
+impl input::Input for Input {
+    fn get(&mut self) -> std::result::Result<input::Result, std::num::ParseIntError> {
         if event::poll(std::time::Duration::from_millis(250)).expect("not good") {
             if let Event::Key(key_event) = event::read().expect("not good") {
                 match key_event.code {
@@ -23,9 +24,9 @@ impl super::Input for Input {
                     KeyCode::Enter => {
                         let input = std::mem::take(&mut self.buff);
                         if input == "quit" {
-                            return Ok(super::Result::Exit);
+                            return Ok(input::Result::Exit);
                         }
-                        return super::parse_input(&input);
+                        return input::parse_input(&input);
                     }
                     KeyCode::Backspace => {
                         if !self.buff.is_empty() {
@@ -37,13 +38,13 @@ impl super::Input for Input {
             }
         }
 
-        Ok(super::Result::None)
+        Ok(input::Result::None)
     }
 
     fn wait_exit(&mut self) {
         loop {
             match self.get() {
-                Ok(super::Result::Exit) => return,
+                Ok(input::Result::Exit) => return,
                 _ => (),
             };
         }

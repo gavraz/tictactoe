@@ -1,5 +1,3 @@
-use std::os::macos::raw::stat;
-
 use crate::game::Cell::Empty;
 use crate::game::Outcome::{Tie, Win};
 use crate::game::Player::{O, X};
@@ -9,6 +7,15 @@ use crate::game::Status::{Ended, Playing};
 pub enum Player {
     X,
     O,
+}
+
+impl std::fmt::Display for Player {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Player::X => write!(f, "X"),
+            Player::O => write!(f, "O"),
+        }
+    }
 }
 
 #[derive(Copy, Clone, PartialEq, Eq)]

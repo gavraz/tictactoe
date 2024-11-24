@@ -1,8 +1,5 @@
 use crate::game::State;
 
-pub mod term;
-pub mod tui;
-
 pub trait Display {
     fn update(&mut self, state: State);
     fn on_move(&mut self, status: std::result::Result<super::Status, super::game::MoveError>);

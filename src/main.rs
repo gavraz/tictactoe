@@ -2,17 +2,19 @@ mod display;
 mod game;
 mod input;
 
-use crate::display::Display;
-use crate::game::Game;
-use game::Status;
+mod ratatui;
+use ratatui as controller;
+// mod term;
+// use term as controller;
+
+use display::Display;
+use game::{Game, Status};
 use input::Input;
 
 fn main() {
     let mut game = Game::new();
-    let mut display = display::tui::Display::new(game.state());
-    let mut input = input::tui::Input::new();
-    // let mut display = display::term::Display::new(game.state());
-    // let mut input = input::term::Input::new();
+    let mut display = controller::display::Display::new(game.state());
+    let mut input = controller::input::Input::new();
 
     display.draw();
 
