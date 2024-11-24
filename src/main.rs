@@ -9,14 +9,14 @@ use input::Input;
 
 fn main() {
     let mut game = Game::new();
-    let mut display = display::tui::Display::new();
+    let mut display = display::tui::Display::new(game.state());
     let mut input = input::tui::Input::new();
-    // let mut display = display::term::Display::new();
+    // let mut display = display::term::Display::new(game.state());
     // let mut input = input::term::Input::new();
 
-    loop {
-        display.draw(game.state());
+    display.draw();
 
+    loop {
         let input_res = input.get();
 
         display.on_input(&input_res);
@@ -26,15 +26,19 @@ fn main() {
             _ => continue,
         };
         let status = game.apply(i, j);
-        display.on_change(status);
+        display.on_move(status);
 
         match status {
             Ok(game::Status::Ended(_)) => break,
             _ => {}
         };
+
+        display.update(game.state());
+        display.draw();
     }
 
-    display.draw(game.state());
+    display.update(game.state());
+    display.draw();
 
     input.wait_exit();
 }

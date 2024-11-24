@@ -1,7 +1,9 @@
+use std::os::macos::raw::stat;
+
 use crate::game::Cell::Empty;
-use crate::game::Status::{Ended, Playing};
 use crate::game::Outcome::{Tie, Win};
 use crate::game::Player::{O, X};
+use crate::game::Status::{Ended, Playing};
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Player {
@@ -51,6 +53,11 @@ pub enum MoveError {
     OutOfBounds,
 }
 
+pub struct State {
+    pub board: [[Cell; BOARD_SIZE]; BOARD_SIZE],
+    pub status: Status,
+}
+
 pub const BOARD_SIZE: usize = 3;
 pub struct Game {
     board: [[Cell; BOARD_SIZE]; BOARD_SIZE],
@@ -79,10 +86,18 @@ impl Game {
         self.board[i][j] = Cell::Filled(self.current_player);
         self.moves += 1;
 
-        Ok(self.check())
+        let status = self.check();
+        let status = match status {
+            Playing(player) => {
+                self.current_player = player.opposite();
+                Playing(self.current_player)
+            },
+            _ => status,
+        };
+        Ok(status)
     }
 
-    fn check(&mut self) -> Status {
+    fn check(&self) -> Status {
         if self.board[0][0] == self.board[1][1] && self.board[1][1] == self.board[2][2] {
             match self.board[0][0].player() {
                 Some(X) => return Ended(Win(X)),
@@ -123,18 +138,20 @@ impl Game {
             return Ended(Tie);
         }
 
-        self.current_player = self.current_player.opposite();
         Playing(self.current_player)
     }
 
-    pub fn state(&self) -> [[Cell; BOARD_SIZE]; BOARD_SIZE] {
-        self.board
+    pub fn state(&self) -> State {
+        State {
+            board: self.board,
+            status: self.check(),
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::game::{Cell, Game, Status, Player};
+    use crate::game::{Cell, Game, Player, Status};
 
     #[test]
     fn test_check_win_in_rows() {

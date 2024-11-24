@@ -1,16 +1,18 @@
-use crate::game::{Cell, Status, MoveError, Outcome, Player};
+use crate::game::{Cell, MoveError, Outcome, Player, State, Status};
 use std::fmt::Formatter;
 
-pub struct Display {}
+pub struct Display {
+    state: State,
+}
 
 impl Display {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(state: State) -> Self {
+        Self { state }
     }
 }
 
 impl super::Display for Display {
-    fn on_change(&mut self, status: std::result::Result<Status, MoveError>) {
+    fn on_move(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {
                 Status::Playing(player) => {
@@ -30,9 +32,9 @@ impl super::Display for Display {
         }
     }
 
-    fn draw(&mut self, state: [[Cell; 3]; 3]) {
+    fn draw(&mut self) {
         println!("┌───┬───┬───┐");
-        for (i, row) in state.iter().enumerate() {
+        for (i, row) in self.state.board.iter().enumerate() {
             print!("│");
             for c in row {
                 print!(" {c} │");
@@ -44,12 +46,19 @@ impl super::Display for Display {
         }
         println!("└───┴───┴───┘");
     }
-    
-    fn on_input(&mut self, res: &std::result::Result<crate::input::Result, std::num::ParseIntError>) {
+
+    fn on_input(
+        &mut self,
+        res: &std::result::Result<crate::input::Result, std::num::ParseIntError>,
+    ) {
         match res {
-            Ok(_) => {},
+            Ok(_) => {}
             Err(e) => println!("Incorrect input{e}\nChoose a position (Format: i,j):"),
         }
+    }
+
+    fn update(&mut self, state: State) {
+        self.state = state;
     }
 }
 

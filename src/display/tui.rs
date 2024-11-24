@@ -1,4 +1,4 @@
-use crate::game::{Cell, Player, BOARD_SIZE};
+use crate::game::{Cell, Player, State, BOARD_SIZE};
 
 use super::super::{game::MoveError, game::Outcome, Status};
 use ratatui::layout::{Alignment, Constraint, Direction, Layout};
@@ -13,13 +13,15 @@ use ratatui::{
 pub struct Display {
     term: ratatui::DefaultTerminal,
     msg: String,
+    state: State,
 }
 
 impl Display {
-    pub fn new() -> Self {
+    pub fn new(state: State) -> Self {
         Self {
             term: ratatui::init(),
             msg: String::new(),
+            state,
         }
     }
 }
@@ -31,12 +33,11 @@ impl Drop for Display {
 }
 
 impl super::Display for Display {
-    fn on_change(&mut self, status: std::result::Result<Status, MoveError>) {
+    fn on_move(&mut self, status: std::result::Result<Status, MoveError>) {
         match status {
             Ok(status) => match status {
                 Status::Playing(player) => {
-                    self.msg =
-                        format!("Current player: {player}\n");
+                    self.msg = format!("Current player: {player}\n");
                 }
                 Status::Ended(Outcome::Tie) => {
                     self.msg = format!("Game result: Tie");
@@ -56,7 +57,7 @@ impl super::Display for Display {
         }
     }
 
-    fn draw(&mut self, state: [[crate::game::Cell; 3]; 3]) {
+    fn draw(&mut self) {
         _ = self.term.draw(|f| {
             let chunks = Layout::default()
                 .direction(Direction::Vertical)
@@ -78,7 +79,7 @@ impl super::Display for Display {
             f.render_widget(title, chunks[0]);
 
             // Game area
-            let board_content = render_board(&state);
+            let board_content = render_board(&self.state.board);
             let game_area = Paragraph::new(board_content)
                 .alignment(Alignment::Center)
                 .block(
@@ -91,12 +92,9 @@ impl super::Display for Display {
 
             // -- bottom bar --
             let bottom_bar = Layout::default()
-            .direction(Direction::Horizontal)
-            .constraints([
-                Constraint::Percentage(50),
-                Constraint::Percentage(50),
-            ])
-            .split(chunks[2]);
+                .direction(Direction::Horizontal)
+                .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+                .split(chunks[2]);
 
             // 1. Message bar
             let message_bar = Paragraph::new(self.msg.clone())
@@ -119,6 +117,10 @@ impl super::Display for Display {
             Ok(_) => {}
             Err(e) => self.msg = format!("Incorrect input: {e}\n"),
         };
+    }
+    
+    fn update(&mut self, state: State) {
+        self.state = state;
     }
 }
 
